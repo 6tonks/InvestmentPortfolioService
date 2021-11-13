@@ -23,8 +23,8 @@ def create_or_update_stock_in_portfolio(db_schema, table_name, stock_ticker, sto
     res = conn.commit()
 
     sql = "INSERT INTO " + db_schema + "." + table_name + " (ticker, quantity) " \
-          + "VALUES ('%s', %s)" %(stock_ticker, stock_quantity) + " ON DUPLICATE KEY UPDATE " + \
-          "quantity=quantity+'%s'" %(stock_quantity)
+          + "VALUES ('%s', %s)" % (stock_ticker, stock_quantity) + " ON DUPLICATE KEY UPDATE " + \
+          "quantity=quantity+'%s'" % stock_quantity
     print("SQL Statement = " + cur.mogrify(sql, None))
     res = cur.execute(sql)
     res = conn.commit()
@@ -32,6 +32,23 @@ def create_or_update_stock_in_portfolio(db_schema, table_name, stock_ticker, sto
     conn.close()
 
     return res
+
+
+def sell_stock_in_portfolio(db_schema, table_name, stock_ticker, stock_quantity):
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+    sql = "UPDATE " + db_schema + "." + table_name + " SET " + \
+          "quantity=quantity-'%s'" % stock_quantity + " where " + \
+          "ticker" + " like " + "'" + stock_ticker + "%'"
+    print("SQL Statement = " + cur.mogrify(sql, None))
+    res = cur.execute(sql)
+    res = conn.commit()
+
+    conn.close()
+
+    return res
+
 
 def get_table(db_schema, table_name):
 

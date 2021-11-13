@@ -9,15 +9,24 @@ schema = BuySellSchema()
 
 class BuyStock(Resource):
     def get(self):
-        buy_args = request.args
-        errors = schema.validate(buy_args)
+        errors = schema.validate(request.args)
         if errors:
             abort(400, str(errors))
-        res = BuySellResource.buy_stocks(buy_args)
+        res = BuySellResource.buy_stocks(request.args)
+        return "", 204
+
+
+class SellStock(Resource):
+    def get(self):
+        errors = schema.validate(request.args)
+        if errors:
+            abort(400, str(errors))
+        res = BuySellResource.sell_stocks(request.args)
         return "", 204
 
 
 api.add_resource(BuyStock, '/api/buy/')
+api.add_resource(SellStock, '/api/sell/')
 
 
 #@app.before_request
@@ -31,11 +40,6 @@ api.add_resource(BuyStock, '/api/buy/')
 @app.route('/')
 def hello_world():
     return 'Welcome to Investment Portfolio Service!'
-
-
-@app.route('/api/user/sell/')
-def sell_stocks():
-    return 'sell stocks'
 
 
 @app.route('/api/user/view/ ')
