@@ -50,12 +50,12 @@ def sell_stock_in_portfolio(db_schema, table_name, stock_ticker, stock_quantity)
     return res
 
 
-def get_table(db_schema, table_name):
+def get_table_not_zero(db_schema, table_name, column_name):
 
     conn = _get_db_connection()
     cur = conn.cursor()
 
-    sql = "select * from " + db_schema + "." + table_name
+    sql = "select * from " + db_schema + "." + table_name + " WHERE " + column_name + " != 0"
     print("SQL Statement = " + cur.mogrify(sql, None))
 
     res = cur.execute(sql)
