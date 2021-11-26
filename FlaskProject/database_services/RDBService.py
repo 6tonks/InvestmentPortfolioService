@@ -13,18 +13,18 @@ def _get_db_connection():
     return db_connection
 
 
-def create_or_update_stock_in_portfolio(db_schema, table_name, stock_ticker, stock_quantity):
+def create_or_update_stock_in_portfolio(db_schema, table_name, user_id, stock_ticker, stock_quantity):
     conn = _get_db_connection()
     cur = conn.cursor()
     sql = "CREATE TABLE IF NOT EXISTS " + db_schema + ".`" + table_name + \
-          "` (ticker VARCHAR(10) PRIMARY KEY, quantity INT NOT NULL) "
+          "` (user_id VARCHAR(10), ticker VARCHAR(10), quantity INT NOT NULL, primary key (user_id, ticker))"
     print("SQL Statement = " + cur.mogrify(sql, None))
     res = cur.execute(sql)
     res = conn.commit()
 
-    sql = "INSERT INTO " + db_schema + "." + table_name + " (ticker, quantity) " \
-          + "VALUES ('%s', %s)" % (stock_ticker, stock_quantity) + " ON DUPLICATE KEY UPDATE " + \
-          "quantity=quantity+'%s'" % stock_quantity
+    sql = "INSERT INTO " + db_schema + "." + table_name + " (user_id, ticker, quantity) " \
+          + "VALUES ('%s', '%s', %s)" % (user_id, stock_ticker, stock_quantity) + " ON DUPLICATE KEY UPDATE " + \
+          "quantity=quantity+%s" % stock_quantity
     print("SQL Statement = " + cur.mogrify(sql, None))
     res = cur.execute(sql)
     res = conn.commit()
@@ -34,13 +34,14 @@ def create_or_update_stock_in_portfolio(db_schema, table_name, stock_ticker, sto
     return res
 
 
-def sell_stock_in_portfolio(db_schema, table_name, stock_ticker, stock_quantity):
+def sell_stock_in_portfolio(db_schema, table_name, user_id, stock_ticker, stock_quantity):
     conn = _get_db_connection()
     cur = conn.cursor()
 
     sql = "UPDATE " + db_schema + "." + table_name + " SET " + \
-          "quantity=quantity-'%s'" % stock_quantity + " where " + \
-          "ticker" + " like " + "'" + stock_ticker + "%'"
+          "quantity=quantity-%s" % stock_quantity + " where " + \
+          "ticker" + "=" + "'" + stock_ticker + "'" + \
+          " and " + "user_id" + "=" + "'" + user_id + "'"
     print("SQL Statement = " + cur.mogrify(sql, None))
     res = cur.execute(sql)
     res = conn.commit()
@@ -55,7 +56,7 @@ def get_table_not_zero(db_schema, table_name, column_name):
     conn = _get_db_connection()
     cur = conn.cursor()
 
-    sql = "select * from " + db_schema + "." + table_name + " WHERE " + column_name + " != 0"
+    sql = "select * from " + db_schema + "." + table_name + " WHERE " + column_name + "!= 0"
     print("SQL Statement = " + cur.mogrify(sql, None))
 
     res = cur.execute(sql)
@@ -66,13 +67,32 @@ def get_table_not_zero(db_schema, table_name, column_name):
     return res
 
 
-def get_by_prefix(db_schema, table_name, column_name, value_prefix):
+def get_by_two_prefix(db_schema, table_name, column_name_1, value_prefix_1, column_name_2, value_prefix_2):
 
     conn = _get_db_connection()
     cur = conn.cursor()
 
     sql = "select * from " + db_schema + "." + table_name + " where " + \
-        column_name + " like " + "'" + value_prefix + "%'"
+        column_name_1 + "=" + "'" + value_prefix_1 + "'" \
+        " and " + column_name_2 + "=" + "'" + value_prefix_2 + "'"
+    print("SQL Statement = " + cur.mogrify(sql, None))
+
+    res = cur.execute(sql)
+    res = cur.fetchall()
+
+    conn.close()
+
+    return res
+
+
+def get_by_prefix_not_zero(db_schema, table_name, column_name, value_prefix, not_zero_column):
+
+    conn = _get_db_connection()
+    cur = conn.cursor()
+
+    sql = "select * from " + db_schema + "." + table_name + " where " + \
+        column_name + "=" + value_prefix + \
+        " and " + not_zero_column + "!=0"
     print("SQL Statement = " + cur.mogrify(sql, None))
 
     res = cur.execute(sql)
