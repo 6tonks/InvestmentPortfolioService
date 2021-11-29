@@ -73,7 +73,7 @@ def get_by_two_prefix(db_schema, table_name, column_name_1, value_prefix_1, colu
     cur = conn.cursor()
 
     sql = "select * from " + db_schema + "." + table_name + " where " + \
-        column_name_1 + "=" + "'" + value_prefix_1 + "'" \
+        column_name_1 + "=" + "'" + str(value_prefix_1) + "'" \
         " and " + column_name_2 + "=" + "'" + value_prefix_2 + "'"
     print("SQL Statement = " + cur.mogrify(sql, None))
 
@@ -91,7 +91,7 @@ def get_by_prefix_not_zero(db_schema, table_name, column_name, value_prefix, not
     cur = conn.cursor()
 
     sql = "select * from " + db_schema + "." + table_name + " where " + \
-        column_name + "=" + value_prefix + \
+        column_name + "=" + str(value_prefix) + \
         " and " + not_zero_column + "!=0"
     print("SQL Statement = " + cur.mogrify(sql, None))
 
