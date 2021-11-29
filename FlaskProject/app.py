@@ -9,6 +9,11 @@ api = Api(app)
 buy_sell_schema = BuySellSchema()
 
 
+class WelcomePage(Resource):
+    def get(self):
+        return 'Welcome to Investment Portfolio Service!'
+
+
 class BuyStock(Resource):
     def post(self, _id: int):
         inputs = rest_utils.RESTContext(request)
@@ -51,15 +56,11 @@ class UserStockShares(Resource):
         return rsp
 
 
+api.add_resource(WelcomePage, '/')
 api.add_resource(BuyStock, '/api/buy/<int:_id>/')
 api.add_resource(SellStock, '/api/sell/<int:_id>/')
 api.add_resource(UserPortfolio, '/api/user/<int:_id>/')
 api.add_resource(UserStockShares, '/api/user/<int:_id>/stock/<string:_ticker>/')
-
-
-@app.route('/')
-def hello_world():
-    return 'Welcome to Investment Portfolio Service!'
 
 
 if __name__ == '__main__':
