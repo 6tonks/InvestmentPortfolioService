@@ -18,12 +18,12 @@ class BuyStock(Resource):
     def post(self, _id: int):
         inputs = rest_utils.RESTContext(request)
         r_json = inputs.to_json()
-        params = r_json["data"]
-        params["user_id"] = _id
-        errors = buy_sell_schema.validate(params)
+        payload = r_json["data"]
+        payload["user_id"] = _id
+        errors = buy_sell_schema.validate(payload)
         if errors:
             abort(400, str(errors))
-        res = BuySellResource.buy_stocks(params)
+        res = BuySellResource.buy_stocks(payload)
         rsp = Response(json.dumps(res), status=201, content_type="application/json")
         return rsp
 
@@ -32,12 +32,12 @@ class SellStock(Resource):
     def post(self, _id: int):
         inputs = rest_utils.RESTContext(request)
         r_json = inputs.to_json()
-        params = r_json["data"]
-        params["user_id"] = _id
-        errors = buy_sell_schema.validate(params)
+        payload = r_json["data"]
+        payload["user_id"] = _id
+        errors = buy_sell_schema.validate(payload)
         if errors:
             abort(400, str(errors))
-        res = BuySellResource.sell_stocks(params)
+        res = BuySellResource.sell_stocks(payload)
         rsp = Response(json.dumps(res), status=201, content_type="application/json")
         return rsp
 

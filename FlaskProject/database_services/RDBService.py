@@ -41,7 +41,7 @@ def sell_stock_in_portfolio(db_schema, table_name, user_id, stock_ticker, stock_
     sql = "UPDATE " + db_schema + "." + table_name + " SET " + \
           "quantity=quantity-%s" % stock_quantity + " where " + \
           "ticker" + "=" + "'" + stock_ticker + "'" + \
-          " and " + "user_id" + "=" + "'" + user_id + "'"
+          " and " + "user_id" + "=" + "'" + str(user_id) + "'"
     print("SQL Statement = " + cur.mogrify(sql, None))
     res = cur.execute(sql)
     res = conn.commit()
