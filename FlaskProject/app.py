@@ -19,7 +19,11 @@ class BuyStock(Resource):
         inputs = rest_utils.RESTContext(request)
         r_json = inputs.to_json()
         payload = r_json["data"]
-        payload["user_id"] = _id
+        
+        # AWS Step Function can only send string request
+        payload["user_id"] = int(_id)
+        payload["quantity"] = int(payload["quantity"])
+        
         errors = buy_sell_schema.validate(payload)
         if errors:
             abort(400, str(errors))
@@ -33,7 +37,11 @@ class SellStock(Resource):
         inputs = rest_utils.RESTContext(request)
         r_json = inputs.to_json()
         payload = r_json["data"]
-        payload["user_id"] = _id
+        
+        # AWS Step Function can only send string request
+        payload["user_id"] = int(_id)
+        payload["quantity"] = int(payload["quantity"])
+
         errors = buy_sell_schema.validate(payload)
         if errors:
             abort(400, str(errors))
