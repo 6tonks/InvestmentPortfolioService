@@ -72,4 +72,4 @@ api.add_resource(UserStockShares, '/api/user/<int:_id>/stock/<string:_ticker>/')
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0", port="8081")
