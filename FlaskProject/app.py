@@ -32,9 +32,9 @@ class WelcomePage(Resource):
                         'rel': 'Sell shares',
                         'method': 'POST',
                         'href': f'/api/sell/<_id>'
-                    },
-                ]
-        }
+                    }
+                 ]
+                }
 
 
 class BuyStock(Resource):
@@ -47,8 +47,10 @@ class BuyStock(Resource):
         if errors:
             abort(400, str(errors))
         res, status = BuySellResource.buy_stocks(payload)
-        if status == 201:
-            res = BuySellResource.default_links(_id, payload["ticker"])
+        if status == 201 and not res:
+            res = {'success': 1,
+                   'links': BuySellResource.default_links(_id, payload["ticker"])
+                  }
         rsp = Response(json.dumps(res), status=201, content_type="application/json")
         return rsp
 
@@ -63,8 +65,10 @@ class SellStock(Resource):
         if errors:
             abort(400, str(errors))
         res, status = BuySellResource.sell_stocks(payload)
-        if status == 201:
-            res = BuySellResource.default_links(_id, payload["ticker"])
+        if status == 201 and not res:
+            res = {'success': 1,
+                   'links': BuySellResource.default_links(_id, payload["ticker"])
+                  }
         rsp = Response(json.dumps(res), status=201, content_type="application/json")
         return rsp
 

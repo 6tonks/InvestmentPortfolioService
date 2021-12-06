@@ -38,13 +38,13 @@ class BuySellResource(BaseApplicationResource):
 
     @classmethod
     def default_links(cls, _id, ticker):
-        return {'links': [{
-                            'rel': 'user',
-                            'href': f'/api/user/{_id}'
-                            },
-                            {
-                                'rel': 'stock',
-                                'href': f'/api/user/{_id}/stock/{ticker}'
-                            }
-                        ]
-                }
+        return [
+                    {
+                        'rel': 'user',
+                        'href': f'/api/user/{_id}'
+                    },
+                    {
+                        'rel': 'stock',
+                        'href': f'/api/user/{_id}/stock/{ticker}'
+                    }
+               ]
