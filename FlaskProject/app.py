@@ -11,7 +11,30 @@ buy_sell_schema = BuySellSchema()
 
 class WelcomePage(Resource):
     def get(self):
-        return 'Welcome to Investment Portfolio Service!'
+        return {"Welcome": 'Investment Portfolio Service',
+                "links": [
+                    {
+                        'rel': 'User portfolio',
+                        'method': 'GET',
+                        'href': f'/api/user/<_id>'
+                    },
+                    {
+                        'rel': 'User stock quantity',
+                        'method': 'GET',
+                        'href': f'/api/user/<_id>/stock/<_ticker>'
+                    },
+                    {
+                        'rel': 'Buy shares',
+                        'method': 'POST',
+                        'href': f'/api/buy/<_id>'
+                    },
+                    {
+                        'rel': 'Sell shares',
+                        'method': 'POST',
+                        'href': f'/api/sell/<_id>'
+                    },
+                ]
+        }
 
 
 class BuyStock(Resource):
