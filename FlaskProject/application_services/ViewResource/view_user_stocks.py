@@ -10,10 +10,13 @@ class ViewUserStocksResource(BaseApplicationResource):
 
     @classmethod
     def get_portfolio(cls, user_id):
-        res = d_service.get_by_prefix_not_zero('investmentportfolios', 'all', 'user_id', user_id, 'quantity')
-        if not res:
+        stocks = d_service.get_by_prefix_not_zero('investmentportfolios', 'all', 'user_id', user_id, 'quantity')
+        if not stocks:
             abort(400, str({'user_id': ['No stocks for the requested user.']}))
-        return res
+        res = {}
+        for stock in stocks:
+            res[stock['ticker']] = stock['quantity']
+        return res, 200
 
     @classmethod
     def get_stock_shares(cls, user_id, ticker):

@@ -21,7 +21,7 @@ class BuySellResource(BaseApplicationResource):
         ticker = order_args['ticker']
         quantity = order_args['quantity']
         res = d_service.create_or_update_stock_in_portfolio('investmentportfolios', 'all', user_id, ticker, quantity)
-        return res
+        return res, 201
 
 
     @classmethod
@@ -34,4 +34,17 @@ class BuySellResource(BaseApplicationResource):
         if sell_quantity > available_quantity:
             abort(400, str({'quantity': ['Not enough shares in user portfolio.']}))
         res = d_service.sell_stock_in_portfolio('investmentportfolios', 'all', user_id, ticker, sell_quantity)
-        return res
+        return res, 201
+
+    @classmethod
+    def default_links(cls, _id, ticker):
+        return {'links': [{
+                            'rel': 'user',
+                            'href': f'/api/user/{_id}'
+                            },
+                            {
+                                'rel': 'stock',
+                                'href': f'/api/user/{_id}/stock/{ticker}'
+                            }
+                        ]
+                }

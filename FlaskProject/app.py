@@ -23,7 +23,9 @@ class BuyStock(Resource):
         errors = buy_sell_schema.validate(payload)
         if errors:
             abort(400, str(errors))
-        res = BuySellResource.buy_stocks(payload)
+        res, status = BuySellResource.buy_stocks(payload)
+        if status == 201:
+            res = BuySellResource.default_links(_id, payload["ticker"])
         rsp = Response(json.dumps(res), status=201, content_type="application/json")
         return rsp
 
@@ -37,21 +39,34 @@ class SellStock(Resource):
         errors = buy_sell_schema.validate(payload)
         if errors:
             abort(400, str(errors))
-        res = BuySellResource.sell_stocks(payload)
+        res, status = BuySellResource.sell_stocks(payload)
+        if status == 201:
+            res = BuySellResource.default_links(_id, payload["ticker"])
         rsp = Response(json.dumps(res), status=201, content_type="application/json")
         return rsp
 
 
 class UserPortfolio(Resource):
     def get(self, _id: int):
-        res = ViewUserStocksResource.get_portfolio(_id)
-        rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+        res = {}
+        res["portfolio"], status = ViewUserStocksResource.get_portfolio(_id)
+        if status == 200:
+            res["user"] = _id
+            res["self"] = f'/api/user/{_id}'
+        rsp = Response(json.dumps(res, default=str), status=status, content_type="application/json")
         return rsp
 
 
 class UserStockShares(Resource):
     def get(self, _id: str, _ticker: str):
-        res = ViewUserStocksResource.get_stock_shares(_id, _ticker)
+        res = ViewUserStocksResource.get_stock_shares(_id, _ticker)[0]
+        res["self"] = f'/api/user/{_id}/stock/{_ticker}'
+        res["links"] = [
+                    {
+                        'rel': 'user',
+                        'href': f'/api/user/{_id}'
+                    }
+                ]
         rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
         return rsp
 
