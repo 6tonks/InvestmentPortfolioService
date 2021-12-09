@@ -23,7 +23,7 @@ class BuyStock(Resource):
         payload = r_json["data"]
         
         # AWS Step Function can only send string request
-        payload["user_id"] = int(_id)
+        payload["user_id"] = _id
         payload["quantity"] = int(payload["quantity"])
         
         errors = buy_sell_schema.validate(payload)
@@ -41,7 +41,7 @@ class SellStock(Resource):
         payload = r_json["data"]
         
         # AWS Step Function can only send string request
-        payload["user_id"] = int(_id)
+        payload["user_id"] = _id
         payload["quantity"] = int(payload["quantity"])
 
         errors = buy_sell_schema.validate(payload)
