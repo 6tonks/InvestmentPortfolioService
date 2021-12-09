@@ -65,7 +65,7 @@ class UserStockShares(Resource):
         rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
         return rsp
 
-
+# Removing the last slash to solve 308 redirect problem
 api.add_resource(WelcomePage, '/')
 api.add_resource(BuyStock, '/api/buy/<int:_id>')
 api.add_resource(SellStock, '/api/sell/<int:_id>')
