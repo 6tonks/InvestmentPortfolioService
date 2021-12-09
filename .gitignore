@@ -1,5 +1,8 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+db_config.py
+nohup.out
+
 *.py[cod]
 *$py.class
 
